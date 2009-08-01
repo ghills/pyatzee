@@ -9,4 +9,4 @@ print x.value
 """
 
 h = hand()
-print [d for d in hand.dice]
+print [d.value for d in hand.dice]

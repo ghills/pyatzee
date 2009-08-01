@@ -1,6 +1,7 @@
 import random
 
 class dice(object):
+	held = False
 
 	def __init__(self, sides):
 		random.seed()
