@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from dice import dice
 from hand import hand
 
