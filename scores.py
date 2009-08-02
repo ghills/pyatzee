@@ -5,7 +5,7 @@ class scoreengine(object):
 		self.populate_types()
 	
 	def get_possible(self, hand):
-		return filter(lambda x: x.score(hand) != 0 and not x.used,self.score_types)
+		return filter(lambda x: not x.used,self.score_types)
 	
 	def populate_types(self):
 		self.score_types.append(score("Ones",lambda x: [d.value for d in x.dice].count(1)))
@@ -21,6 +21,13 @@ class scoreengine(object):
 		self.score_types.append(score("Large Straight",self.large_straight))
 		self.score_types.append(score("Yatzee",self.yatzee))
 		self.score_types.append(score("Chance",lambda x: sum([d.value for d in x.dice])))
+	
+	def get_scoreboard(self):
+		result = []
+		for type in self.score_types:
+			if type.used: result.append([type.title, str(st.calcscore)])
+			else: result.append([type.title,"-"])
+		return result
 	
 	def three_of_kind(self,hand):
 		vals = [d.value for d in hand.dice]
@@ -62,7 +69,13 @@ class scoreengine(object):
 
 	
 class score(object):
+	calcscore = 0
 	used = False
 	def __init__(self, title, score):
 		self.title = title
 		self.score = score
+	def use(self,hand):
+		points = self.score(hand)
+		self.score = lambda x: points
+		calcscore = int(points)
+		
