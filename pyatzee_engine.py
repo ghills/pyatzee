@@ -20,7 +20,6 @@ class engine(object):
             self.view.get_input(self.h)
             self.h.roll()
             self.view.show_hand(self.h)
-            self.h.roll()
             self.view.show_potential_points(self.h, self.scengine)
             self.h.unhold_all()
             self.h.roll()

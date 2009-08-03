@@ -25,7 +25,7 @@ class scoreengine(object):
 	def get_scoreboard(self):
 		result = []
 		for type in self.score_types:
-			if type.used: result.append([type.title, str(st.calcscore)])
+			if type.used: result.append([type.title, str(type.calcscore)])
 			else: result.append([type.title,"-"])
 		return result
 	
@@ -76,6 +76,6 @@ class score(object):
 		self.score = score
 	def use(self,hand):
 		points = self.score(hand)
-		self.score = lambda x: points
+		self.used = True
 		calcscore = int(points)
 		
