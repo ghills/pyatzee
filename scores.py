@@ -25,8 +25,8 @@ class scoreengine(object):
 	def get_scoreboard(self):
 		result = []
 		for type in self.score_types:
-			if type.used: result.append([type.title, str(type.calcscore)])
-			else: result.append([type.title,"-"])
+			if type.used: result.append([type.title, str(type.calcscore),type.calcscore])
+			else: result.append([type.title,"-",0])
 		return result
 	
 	def three_of_kind(self,hand):

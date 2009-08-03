@@ -9,8 +9,12 @@ class cliview(object):
     
     def show_scoreboard(self,scoreengine):
         #show the scoreboard from the engine
+        total = 0
         for type in scoreengine.get_scoreboard():
             print "%s: %s" % (type[0],type[1])
+            total += type[2]
+        print "TOTAL: %d" % total
+        
     
     def show_hand(self,hand):
         #show the hand you have, choose what to hold
