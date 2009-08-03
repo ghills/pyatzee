@@ -1,50 +1,68 @@
 class scoreengine(object):
-
+	score_types = []
+	
+	def __init__(self):
+		self.populate_types()
+	
 	def get_possible(self, hand):
-		possible_scores = []
-		#Ones
-		possible_scores.append(score("Ones",self.check_num(1,hand)))
-		#Twos
-		possible_scores.append(score("Twos",self.check_num(2,hand)))
-		#Threes
-		possible_scores.append(score("Threes",self.check_num(3,hand)))
-		#Fours
-		possible_scores.append(score("Fours",self.check_num(4,hand)))
-		#Fives
-		possible_scores.append(score("Fives",self.check_num(5,hand)))
-		#Sixes
-		possible_scores.append(score("Sixes",self.check_num(6,hand)))
-		#Three of a kind
-		possible_scores.append(score("Three of a kind",self.check_of_a_kind(3,hand)))
-		#Four of a kind
-		possible_scores.append(score("Three of a kind",self.check_of_a_kind(4,hand)))
-		#Full House
-		#Small Straight
-		#Large Straight
-		#Chance
-		possible_scores.append(score("Chance",sum([x.value for x in hand.dice])))
-		#Yatzee
-		return filter(lambda x: x.score != 0,possible_scores)
+		return filter(lambda x: x.score(hand) != 0 and not x.used,self.score_types)
 	
-	def check_num(self,n,hand):
-		counter = 0
-		for d in hand.dice:
-			if d.value == n: counter += n
-		return counter
+	def populate_types(self):
+		self.score_types.append(score("Ones",lambda x: [d.value for d in x.dice].count(1)))
+		self.score_types.append(score("Twos",lambda x: 2 * [d.value for d in x.dice].count(2)))
+		self.score_types.append(score("Threes",lambda x: 3 * [d.value for d in x.dice].count(3)))
+		self.score_types.append(score("Fours",lambda x: 4 * [d.value for d in x.dice].count(4)))
+		self.score_types.append(score("Fives",lambda x: 5 * [d.value for d in x.dice].count(5)))
+		self.score_types.append(score("Sixes",lambda x: 6 * [d.value for d in x.dice].count(6)))
+		self.score_types.append(score("Three of a kind",self.three_of_kind))
+		self.score_types.append(score("Four of a kind",self.four_of_kind))
+		self.score_types.append(score("Full House",self.full_house))
+		self.score_types.append(score("Small Straight",self.small_straight))
+		self.score_types.append(score("Large Straight",self.large_straight))
+		self.score_types.append(score("Yatzee",self.yatzee))
+		self.score_types.append(score("Chance",lambda x: sum([d.value for d in x.dice])))
 	
-	def check_of_a_kind(self,n,hand):
-		vals = []
-		for d in hand.dice:
-			vals.append(d.value)
-		for i in range(1,6):
-			if vals.count(i) >= n:
-				return sum(vals)
-		return 0
-				
+	def three_of_kind(self,hand):
+		vals = [d.value for d in hand.dice]
+		if max([vals.count(i) for i in range(1,7)]) >= 3: return sum(vals)
+		else: return 0
+	
+	def four_of_kind(self,hand):
+		vals = [d.value for d in hand.dice]
+		if max([vals.count(i) for i in range(1,7)]) >= 4: return sum(vals)
+		else: return 0
+	
+	def full_house(self,hand):
+		vals = [d.value for d in hand.dice]
+		countvals = [vals.count(i) for i in range(1,7)]
+		if countvals.count(3) == 1 and countvals.count(2) == 1: return 25
+		else: return 0
 		
+	def small_straight(self,hand):
+		countvals = map(self.hasit,[[d.value for d in hand.dice].count(i) for i in range(1,7)])
+		strvals = "".join(map(str,countvals))
+		if strvals.find("1111") >= 0: return 30
+		else: return 0
+		
+	def large_straight(self,hand):
+		countvals = map(self.hasit,[[d.value for d in hand.dice].count(i) for i in range(1,7)])
+		strvals = "".join(map(str,countvals))
+		if strvals.find("11111") >= 0: return 40
+		else: return 0
+	
+	def hasit(self,x):
+		if x>0: return 1
+		else: return 0
+	
+	def yatzee(self,hand):
+		vals = [d.value for d in hand.dice]
+		countvals = [vals.count(i) for i in range(1,7)]
+		if countvals.count(5) == 1: return 50
+		else: return 0
+
 	
 class score(object):
-	
+	used = False
 	def __init__(self, title, score):
 		self.title = title
 		self.score = score
