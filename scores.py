@@ -77,5 +77,6 @@ class score(object):
 	def use(self,hand):
 		points = self.score(hand)
 		self.used = True
-		calcscore = int(points)
+		#print "using %s, %d points" % (self.title,points)
+		self.calcscore = int(points)
 		
